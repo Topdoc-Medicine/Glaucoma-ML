@@ -6,14 +6,15 @@ from keras import backend as K
 from keras import optimizers
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from imgaug import augmenters as iaa
+import os
 
 img_width, img_height = 256, 256
 input_shape = (img_width, img_height, 3)
 
 train_data_dir = "data/train"
 validation_data_dir = "data/validation"
-nb_train_samples = <training samples>
-nb_validation_samples = <validation samples>
+nb_train_samples = sum([len(files) for r, d, files in os.walk(train_data_dir)])
+nb_validation_samples = sum([len(files) for r, d, files in os.walk(validation_data_dir)])
 batch_size = 16
 epochs = 100
 
@@ -107,9 +108,9 @@ reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=2, verbose=0,
 
 model.fit_generator(
     train_generator,
-    steps_per_epoch=nb_train_samples // batch_size,
+    steps_per_epoch=nb_train_samples, 
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size,
+    validation_steps=nb_validation_samples, 
     callbacks=[checkpoint, reduce_lr]
 )

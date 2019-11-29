@@ -1,5 +1,5 @@
-from tkinter import *
-from tkinter import messagebox
+from Tkinter import *
+import tkMessageBox as messagebox
 from keras.models import load_model
 import matplotlib.pyplot as plt
 import cv2

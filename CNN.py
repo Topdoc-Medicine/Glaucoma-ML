@@ -109,7 +109,7 @@ reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=2, verbose=0,
 model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples, 
-    epochs=epochs,
+    epochs=5,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples, 
     callbacks=[checkpoint, reduce_lr]

@@ -6,9 +6,13 @@ import cv2
 import numpy as np
 import os
 import pandas
+import h5py
 
 
-model = load_model('f1.h5')
+h5file =  "f1.h5"
+with h5py.File(h5file,'r+', driver='family', memb_size=0) as fid:
+     model = load_model(fid)
+#model = load_model('f1.h5')
 
 
 def get_filenames():

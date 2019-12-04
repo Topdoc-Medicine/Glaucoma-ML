@@ -8,8 +8,9 @@ import os
 import pandas
 import h5py
 
-
+# read HDF5 file
 h5file =  "f1.h5"
+# this command allows you to close the file automatically after loading
 with h5py.File(h5file,'r+', driver='family', memb_size=0) as fid:
      model = load_model(fid)
 #model = load_model('f1.h5')

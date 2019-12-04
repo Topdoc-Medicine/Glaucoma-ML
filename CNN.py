@@ -103,14 +103,15 @@ validation_generator = test_datagen.flow_from_directory(
     target_size=(img_height, img_width),
     class_mode="categorical")
 
+# write HDF5 file
 checkpoint = ModelCheckpoint("f1.h5", monitor='acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=2, verbose=0, mode='auto', cooldown=0, min_lr=0)
 
 model.fit_generator(
     train_generator,
-    steps_per_epoch=nb_train_samples, 
+    steps_per_epoch=nb_train_samples,
     epochs=5,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples, 
+    validation_steps=nb_validation_samples,
     callbacks=[checkpoint, reduce_lr]
 )

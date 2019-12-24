@@ -9,25 +9,17 @@ import pandas
 import h5py
 
 # read HDF5 file
-h5file =  "f1.h5"
+h5file =  "dataweightsvha.h5"
+
 # this command allows you to close the file automatically after loading
-with h5py.File(h5file,'r+', driver='family', memb_size=0) as fid:
+with h5py.File(h5file,'r') as fid:
      model = load_model(fid)
 #model = load_model('f1.h5')
-
 
 def get_filenames():
     global path
     path = r"test"
     return os.listdir(path)
-
-
-def curselect(event):
-    global spath
-    index = t1.curselection()[0]
-    spath = t1.get(index)
-    return(spath)
-
 
 def autoroi(img):
 
@@ -49,7 +41,7 @@ def autoroi(img):
 
 def prediction():
 
-    img = cv2.imread('test/%s' % (spath))
+    img = cv2.imread('data/train/glaucoma/ROI - image202prime0.jpg.png')
     img = autoroi(img)
     img = cv2.resize(img, (256, 256))
     img = np.reshape(img, [1, 256, 256, 3])
@@ -60,6 +52,12 @@ def prediction():
     return(Class)
 
 
+Class = prediction()
+if (Class == 0):
+    print("Prediction: You have been diagnosed with Glaucoma")
+else:
+    print("Prediction: Congratulations! You are Healthy")
+"""
 def run():
 
     Class = prediction()
@@ -157,3 +155,4 @@ sb1.configure(command=t1.yview)
 
 
 window.mainloop()
+"""

@@ -7,6 +7,7 @@ import numpy as np
 import os
 import pandas
 import h5py
+import glob
 
 # read HDF5 file
 h5file =  "dataweightsvha.h5"
@@ -40,8 +41,10 @@ def autoroi(img):
 
 
 def prediction():
-
-    img = cv2.imread('data/train/glaucoma/ROI - image202prime0.jpg.png')
+    list_of_files = glob.glob('data/test/*')
+    latest_file = max(list_of_files, key=os.path.getctime)
+    print(latest_file)
+    img = cv2.imread(latest_file)
     img = autoroi(img)
     img = cv2.resize(img, (256, 256))
     img = np.reshape(img, [1, 256, 256, 3])

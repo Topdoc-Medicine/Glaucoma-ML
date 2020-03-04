@@ -39,7 +39,7 @@ def autoroi(img):
 
 def prediction():
     list_of_files = glob.glob('data/test/*')
-    latest_file = max(list_of_files, key=os.path.getctime)
+    latest_file = max(list_of_files, key=os.path.getctime) # error line
     img = cv2.imread(latest_file)
     img = autoroi(img)
     img = cv2.resize(img, (256, 256))
@@ -47,12 +47,13 @@ def prediction():
 
     prob = model.predict(img)
     Class = prob.argmax(axis=-1)
+    print(prob)
 
     return(Class)
 
 
 Class = prediction()
-if (Class == 0):
-    print("Unfortunately, you have been diagnosed with glaucoma.")
-else:
+if (Class == 1):
     print("Congratulations! You are healthy!")
+else:
+    print("Unfortunately, you have been diagnosed with glaucoma.")

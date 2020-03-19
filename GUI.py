@@ -38,23 +38,24 @@ def autoroi(img):
 
 
 def prediction():
-    list_of_files = glob.glob('data/train/not_glaucoma/*') #testing different files
+    list_of_files = glob.glob('data/validation/not_glaucoma/*') #testing different files
     latest_file = max(list_of_files, key=os.path.getctime)
     img = cv2.imread(latest_file)
     img = autoroi(img)
     img = cv2.resize(img, (256, 256))
     img = np.reshape(img, [1, 256, 256, 3])
 
-    prob = model.predict(img)
-    print(prob) # only showing 2 outputs (1,0) when online most algorithms have many with decimals
-    Class = prob.argmax(axis=1) #this might be the error line,
-    return(Class)
+    prediction = model.predict(img)
+    # Class = prob.argmax(axis=1) # why was this here lmao
+    print(prediction)
 
 
-Class = prediction()
-print(Class) #unsure if 1 or 0 is healthy or not, giving same output for two different images
-#always returning 0, used all 4 folders for tests
-if (Class == 1):
+    return(prediction)
+
+
+finalPrediction = prediction()
+print "Final Prediction = ", finalPrediction
+if (finalPrediction == 1):
     print("Congratulations! You are healthy!")
 else:
     print("Unfortunately, you have been diagnosed with glaucoma.")

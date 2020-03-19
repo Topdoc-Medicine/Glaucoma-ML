@@ -1,4 +1,3 @@
 # Glaucoma-Detection
 
-Glaucoma Detection
-New CNN 
+New version of deep-learning-based Glaucoma classification

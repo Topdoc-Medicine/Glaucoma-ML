@@ -9,7 +9,7 @@ import pandas
 import h5py
 import glob
 
-h5file =  "f1.h5"
+h5file =  "CNN2Weights.h5"
 
 with h5py.File(h5file,'r') as fid:
      model = load_model(fid)
@@ -38,12 +38,12 @@ def autoroi(img):
 
 
 def prediction():
-    list_of_files = glob.glob('data/validation/not_glaucoma/*') #testing different files
+    list_of_files = glob.glob('glaucomadataset/glaucoma/*') #testing different files
     latest_file = max(list_of_files, key=os.path.getctime)
     img = cv2.imread(latest_file)
     img = autoroi(img)
-    img = cv2.resize(img, (256, 256))
-    img = np.reshape(img, [1, 256, 256, 3])
+    img = cv2.resize(img, (224, 224))
+    img = np.reshape(img, [1, 224, 224, 3])
 
     prediction = model.predict(img)
     # Class = prob.argmax(axis=1) # why was this here lmao

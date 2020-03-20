@@ -33,7 +33,7 @@ def crop_image_from_gray(img,tol=7):
     #         print(img.shape)
         return img
 
-path = ['./data/train/glaucoma/', './data/train/not_glaucoma/']
+path = ['./glaucomadataset/Glaucoma/', './glaucomadataset/Non Glaucoma/']
 images = []
 labels = []
 for n,i in enumerate(path):
@@ -70,11 +70,11 @@ model.add(GlobalAveragePooling2D())
 model.add(Dropout(0.5))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-ck = ModelCheckpoint('glaucoma_weights.hdf5', monitor='val_loss', save_best_only=True, mode='auto', verbose=1)
+ck = ModelCheckpoint('CNN2Weights.h5', monitor='val_loss', save_best_only=True, mode='auto', verbose=1)
 re = ReduceLROnPlateau(monitor='val_loss', mode='auto', factor=0.2, patience=4, verbose=1)
 model.summary()
 
-history = model.fit_generator(train_gen, epochs=50, steps_per_epoch=800//32,
+history = model.fit_generator(train_gen, epochs=25, steps_per_epoch=800//32,
                               verbose=1, validation_data=(x_valid,y_valid),
                               callbacks=[ck,re])
 pred = model.evaluate(x_test, y_test)

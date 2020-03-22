@@ -70,14 +70,14 @@ model.add(GlobalAveragePooling2D())
 model.add(Dropout(0.5))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-ck = ModelCheckpoint('CNN2Weights.h5', monitor='val_loss', save_best_only=True, mode='auto', verbose=1)
+ck = ModelCheckpoint('CNN2Weights2.h5', monitor='val_loss', save_best_only=True, mode='auto', verbose=1)
 re = ReduceLROnPlateau(monitor='val_loss', mode='auto', factor=0.2, patience=4, verbose=1)
 model.summary()
 
-history = model.fit_generator(train_gen, epochs=25, steps_per_epoch=800//32,
+history = model.fit_generator(train_gen, epochs=50, steps_per_epoch=800//32,
                               verbose=1, validation_data=(x_valid,y_valid),
                               callbacks=[ck,re])
 pred = model.evaluate(x_test, y_test)
 print('Test Accuracy:', pred[1]*100)
 
-model.save("CNN2Weights.h5")
+model.save("CNN2Weights2.h5")

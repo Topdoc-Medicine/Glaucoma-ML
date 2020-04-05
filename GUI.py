@@ -40,12 +40,12 @@ def autoroi(img):
 
 
 def prediction():
-    list_of_files = glob.glob('data/train/glaucoma/*') #testing different files
+    list_of_files = glob.glob('data/validation/glaucoma/*') #testing different files
     latest_file = max(list_of_files, key=os.path.getctime)
     img = cv2.imread(latest_file)
     img = autoroi(img)
-    img = cv2.resize(img, (224, 224))
-    img = np.reshape(img, [1, 224, 224, 3])
+    img = cv2.resize(img, (256, 256))
+    img = np.reshape(img, [1, 256, 256, 3])
     img = tf.cast(img, tf.float64)
 
 
@@ -60,7 +60,7 @@ def prediction():
 
 finalPrediction = prediction()
 print "Final Prediction = ", finalPrediction
-if (finalPrediction < 0.5): #vgg model has decimals
+if (finalPrediction > 0.5): #vgg model has decimals
     print("Congratulations! You are healthy!")
 else:
     print("Unfortunately, you have been diagnosed with glaucoma.")

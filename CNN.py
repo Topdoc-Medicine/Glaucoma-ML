@@ -1,3 +1,4 @@
+import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
 from keras.layers import Input, Conv2D, MaxPooling2D, GlobalAveragePooling2D
@@ -6,6 +7,7 @@ from keras import backend as K
 from keras import optimizers
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from imgaug import augmenters as iaa
+import datetime
 import os
 
 img_width, img_height = 256, 256
@@ -103,15 +105,21 @@ validation_generator = test_datagen.flow_from_directory(
     target_size=(img_height, img_width),
     class_mode="categorical")
 
-# write HDF5 file
-checkpoint = ModelCheckpoint("f1.h5", monitor='acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
-reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=2, verbose=0, mode='auto', cooldown=0, min_lr=0)
+logdir = os.path.join('.',
+                      datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
+reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                              patience=2, min_lr=0.000001)
+callbacks = [reduce_lr, tensorboard_callback]
+
 
 model.fit_generator(
     train_generator,
-    steps_per_epoch=nb_train_samples,
+    steps_per_epoch=nb_train_samples/batch_size,
     epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples,
-    callbacks=[checkpoint, reduce_lr]
+    callbacks=callbacks
 )
+
+model.save("f1.h5")

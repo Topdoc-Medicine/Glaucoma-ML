@@ -40,7 +40,7 @@ def autoroi(img):
 
 
 def prediction():
-    list_of_files = glob.glob('data/validation/glaucoma/*') #testing different files
+    list_of_files = glob.glob('data/train/glaucoma/*') #testing different files
     latest_file = max(list_of_files, key=os.path.getctime)
     img = cv2.imread(latest_file)
     img = autoroi(img)

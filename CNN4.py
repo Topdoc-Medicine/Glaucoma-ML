@@ -115,7 +115,7 @@ for i in range(16):
     plt.xticks([]) , plt.yticks([])
 # plt.show()
 
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 NUM_CLASSES = 2
 EPOCHS = 25
 INPUT_SHAPE = (256, 256, 3)
@@ -160,6 +160,8 @@ model.summary()
 
 print("Total Layers:", len(model.layers))
 print("Total trainable layers:", sum([1 for l in model.layers if l.trainable]))
+print(len(train_imgs_scaled), len(train_labels_enc))
+print(len(val_imgs_scaled), len(val_labels_enc))
 
 tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,

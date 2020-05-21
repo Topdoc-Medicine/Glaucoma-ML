@@ -43,7 +43,7 @@ out = tf.keras.layers.Dense(1, activation='sigmoid')(drop2)
 
 model = tf.keras.Model(inputs=inp, outputs=out)
 model.compile(optimizer='adam',
-                loss='binary_crossentropy',
+                loss='categorical_crossentropy',
                 metrics=['accuracy'])
 model.summary()
 

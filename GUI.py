@@ -11,7 +11,7 @@ import pandas
 import h5py
 import glob
 
-h5file =  "CNN4Weights.h5"
+h5file =  "f1.h5"
 
 with h5py.File(h5file,'r') as fid:
      model = tf.keras.models.load_model(fid)
@@ -40,7 +40,7 @@ def autoroi(img):
 
 
 def prediction():
-    list_of_files = glob.glob('data/train/not_glaucoma/*') #testing different files
+    list_of_files = glob.glob('data/train/not_glaucoma/ROI - 842_left.jpeg.png') #testing different files
     latest_file = max(list_of_files, key=os.path.getctime)
     img = cv2.imread(latest_file)
     img = autoroi(img)
@@ -51,7 +51,7 @@ def prediction():
 
     prediction = model.predict(img)
     print(prediction)
-    # prediction = prediction.argmax(axis=1)
+    prediction = prediction.argmax()
     print(prediction)
 
 

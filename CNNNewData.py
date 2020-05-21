@@ -18,7 +18,7 @@ validation_data_dir = "data/validation"
 nb_train_samples = sum([len(files) for r, d, files in os.walk(train_data_dir)])
 nb_validation_samples = sum([len(files) for r, d, files in os.walk(validation_data_dir)])
 batch_size = 16
-epochs = 50
+epochs = 25
 
 inp = tf.keras.layers.Input(shape=input_shape)
 

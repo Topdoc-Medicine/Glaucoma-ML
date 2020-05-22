@@ -1,3 +1,5 @@
+# this is the Malaria Architecture, but uses all the Glaucoma preprocessing
+
 import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
@@ -39,7 +41,7 @@ drop1 = tf.keras.layers.Dropout(rate=0.3)(hidden1)
 hidden2 = tf.keras.layers.Dense(512, activation='relu')(drop1)
 drop2 = tf.keras.layers.Dropout(rate=0.3)(hidden2)
 
-out = tf.keras.layers.Dense(1, activation='sigmoid')(drop2)
+out = tf.keras.layers.Dense(1, activation='sigmoid')(drop2) #the error might be here
 
 model = tf.keras.Model(inputs=inp, outputs=out)
 model.compile(optimizer='adam',

@@ -44,10 +44,8 @@ drop2 = tf.keras.layers.Dropout(rate=0.3)(hidden2)
 out = tf.keras.layers.Dense(1, activation='sigmoid')(drop2) #the error might be here
 
 model = tf.keras.Model(inputs=inp, outputs=out)
-model.compile(optimizer='adam',
-                loss='categorical_crossentropy',
-                metrics=['accuracy'])
 model.summary()
+model.compile(loss="categorical_crossentropy", optimizer=optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, decay=0.0, amsgrad=False), metrics=["accuracy"])
 
 # Initiate the train and test generators with data Augumentation
 sometimes = lambda aug: iaa.Sometimes(0.6, aug)

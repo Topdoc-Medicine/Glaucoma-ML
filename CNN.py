@@ -67,7 +67,7 @@ output = Activation('softmax')(block5)
 
 model = Model(inputs=[input], outputs=[output])
 model.summary()
-model.compile(loss="categorical_crossentropy", optimizer=optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False), metrics=["accuracy"])
+model.compile(loss="categorical_crossentropy", optimizer=optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, decay=0.0, amsgrad=False), metrics=["accuracy"])
 
 # Initiate the train and test generators with data Augumentation
 sometimes = lambda aug: iaa.Sometimes(0.6, aug)

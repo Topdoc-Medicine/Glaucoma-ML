@@ -1,12 +1,10 @@
-# this is the Malaria Architecture, but uses all the Glaucoma preprocessing
-
 import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
 from keras.layers import Input, Conv2D, MaxPooling2D, GlobalAveragePooling2D
 from keras.layers import BatchNormalization, Activation, Dropout, Flatten, Dense
 from keras import backend as K
-from keras import optimizers
+from tensorflow.keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from imgaug import augmenters as iaa
 import datetime
@@ -45,7 +43,7 @@ out = tf.keras.layers.Dense(1, activation='sigmoid')(drop2) #the error might be 
 
 model = tf.keras.Model(inputs=inp, outputs=out)
 model.summary()
-model.compile(loss="categorical_crossentropy", optimizer=optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, decay=0.0, amsgrad=False), metrics=["accuracy"])
+model.compile(loss="categorical_crossentropy", optimizer=Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, decay=0.0, amsgrad=False), metrics=["accuracy"])
 
 # Initiate the train and test generators with data Augumentation
 sometimes = lambda aug: iaa.Sometimes(0.6, aug)

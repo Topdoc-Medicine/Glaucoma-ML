@@ -17,6 +17,8 @@ train_data_dir = "data/train"
 validation_data_dir = "data/validation"
 nb_train_samples = sum([len(files) for r, d, files in os.walk(train_data_dir)])
 nb_validation_samples = sum([len(files) for r, d, files in os.walk(validation_data_dir)])
+print(nb_train_samples)
+print(nb_validation_samples)
 batch_size = 16
 epochs = 25
 

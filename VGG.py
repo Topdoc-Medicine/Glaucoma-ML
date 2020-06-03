@@ -10,7 +10,9 @@ import threading
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import datetime
-from sklearn.preprocessing import LabelEncoder
+from imgaug import augmenters as iaa
+from keras.preprocessing.image import ImageDataGenerator
+
 
 img_width, img_height = 256, 256
 input_shape = (img_width, img_height, 3)
@@ -20,22 +22,10 @@ validation_data_dir = "data/validation"
 nb_train_samples = sum([len(files) for r, d, files in os.walk(train_data_dir)])
 nb_validation_samples = sum([len(files) for r, d, files in os.walk(validation_data_dir)])
 
-BATCH_SIZE = 16
-NUM_CLASSES = 2
-EPOCHS = 25
+batch_size = 16
+num_classes = 2
+epochs = 25
 INPUT_SHAPE = (256, 256, 3)
-
-train_imgs_scaled = train_data / 255.
-val_imgs_scaled = val_data / 255.
-
-# encode text category labels
-
-le = LabelEncoder()
-le.fit(train_labels)
-train_labels_enc = le.transform(train_labels)
-val_labels_enc = le.transform(val_labels)
-
-print(train_labels[:6], train_labels_enc[:6])
 
 logdir = os.path.join('.',
                       datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
@@ -65,8 +55,44 @@ model.summary()
 
 print("Total Layers:", len(model.layers))
 print("Total trainable layers:", sum([1 for l in model.layers if l.trainable]))
-print(len(train_imgs_scaled), len(train_labels_enc))
-print(len(val_imgs_scaled), len(val_labels_enc))
+# print(len(train_imgs_scaled), len(train_labels_enc))
+# print(len(val_imgs_scaled), len(val_labels_enc))
+
+# Initiate the train and test generators with data Augumentation
+sometimes = lambda aug: iaa.Sometimes(0.6, aug)
+seq = iaa.Sequential([
+                      iaa.GaussianBlur(sigma=(0 , 1.0)),
+                      iaa.Sharpen(alpha=1, lightness=0),
+                      iaa.CoarseDropout(p=0.1, size_percent=0.15),
+                              sometimes(iaa.Affine(
+                                                    scale={"x": (0.8, 1.2), "y": (0.8, 1.2)},
+                                                    translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
+                                                    rotate=(-30, 30),
+                                                    shear=(-16, 16)))
+                    ])
+
+
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    preprocessing_function=seq.augment_image,
+    horizontal_flip=True,
+    vertical_flip=True)
+
+test_datagen = ImageDataGenerator(
+    rescale=1./255,
+    horizontal_flip=True,
+    vertical_flip=True)
+
+train_generator = train_datagen.flow_from_directory(
+    train_data_dir,
+    target_size=(img_height, img_width),
+    batch_size=batch_size,
+    class_mode="categorical")
+
+validation_generator = test_datagen.flow_from_directory(
+    validation_data_dir,
+    target_size=(img_height, img_width),
+    class_mode="categorical")
 
 tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
@@ -76,12 +102,16 @@ reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
 #                                              mode='auto', baseline=None, restore_best_weights=False)
 callbacks = [reduce_lr, tensorboard_callback]
 
-history = model.fit(x=train_imgs_scaled, y=train_labels_enc,
-                    batch_size=BATCH_SIZE,
-                    epochs=EPOCHS,
-                    validation_data=(val_imgs_scaled, val_labels_enc),
-                    callbacks=callbacks,
-                    verbose=1)
+history = model.fit_generator(
+    train_generator,
+    steps_per_epoch=nb_train_samples/batch_size,
+    epochs=epochs,
+    validation_data=validation_generator,
+    validation_steps=nb_validation_samples,
+    callbacks=callbacks
+)
+
+model.save('vgg.h5')
 
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
 t = f.suptitle('Basic CNN Performance', fontsize=12)

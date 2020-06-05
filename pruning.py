@@ -19,8 +19,15 @@ h5file =  "vgg.h5"
 with h5py.File(h5file,'r') as fid:
      loaded_model = tf.keras.models.load_model(fid)
      
+train_data_dir = "data/train"
+validation_data_dir = "data/validation"
+nb_train_samples = sum([len(files) for r, d, files in os.walk(train_data_dir)])
+nb_validation_samples = sum([len(files) for r, d, files in os.walk(validation_data_dir)])
+batch_size = 16
+epochs = 25
+     
 logdir = './log'
-end_step = np.ceil(1.0 * num_train_samples / batch_size).astype(np.int32) * epochs
+end_step = np.ceil(1.0 * nb_train_samples / batch_size).astype(np.int32) * epochs
 print(end_step)
 
 new_pruning_params = {

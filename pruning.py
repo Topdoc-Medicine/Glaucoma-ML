@@ -18,6 +18,10 @@ h5file =  "vgg.h5"
 
 with h5py.File(h5file,'r') as fid:
      loaded_model = tf.keras.models.load_model(fid)
+     
+logdir = './log'
+end_step = np.ceil(1.0 * num_train_samples / batch_size).astype(np.int32) * epochs
+print(end_step)
 
 new_pruning_params = {
       'pruning_schedule': sparsity.PolynomialDecay(initial_sparsity=0.50,
